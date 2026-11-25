@@ -6,7 +6,7 @@ import xbmcvfs
 SKIN_ID = "skin.ker0n3.flix"
 XML_PATH = xbmcvfs.translatePath(f"special://home/addons/{SKIN_ID}/xml/Includes_Flix.xml")
 INICIO_XML_PATH = xbmcvfs.translatePath(f"special://home/addons/{SKIN_ID}/xml/FlixInicio.xml")
-MARKER = "<!-- PATCH_YOSEBA_V51_OK -->"
+MARKER = "<!-- PATCH_YOSEBA_V52_SINOPSIS_RECORTADA_OK -->"
 INICIO_MARKER = "<!-- PATCH_YOSEBA_INICIO_TOP10_V38_OK -->"
 
 
@@ -39,6 +39,7 @@ def patch_flix_xml():
 
         if MARKER not in content:
             for old_m in (
+                "<!-- PATCH_YOSEBA_V51_OK -->",
                 "<!-- PATCH_YOSEBA_V20_PROPORCION_IZQUIERDA_OK -->",
                 "<!-- PATCH_YOSEBA_V19_PUSH_DERECHA_OK -->",
                 "<!-- PATCH_YOSEBA_V18_ZOOM_EPISODIOS_OK -->",
@@ -263,28 +264,27 @@ def patch_flix_xml():
 
             content = replace_include_block(content, "FlixEpsCards", patch_eps_cards)
 
-            def patch_hero_plot(blk):
+            def revert_hero_plot(blk):
                 blk = re.sub(
-                    r'<control type="textbox">\s*<left>0</left>\s*<top>318</top>\s*<width>820</width>\s*<height>60</height>(\s*<font>font23_narrow</font>\s*<textcolor>FFCCCCCC</textcolor>\s*)<label>\$VAR\[FlixPlot2\]</label>',
-                    r'<control type="textbox">\n\t\t\t\t\t<left>0</left>\n\t\t\t\t\t<top>318</top>\n\t\t\t\t\t<width>880</width>\n\t\t\t\t\t<height>155</height>\1<label>$INFO[ListItem.Plot]</label>',
+                    r'<control type="textbox">\s*<left>0</left>\s*<top>318</top>\s*<width>880</width>\s*<height>155</height>(\s*<font>font23_narrow</font>\s*<textcolor>FFCCCCCC</textcolor>\s*)<label>\$INFO\[ListItem\.Plot\]</label>',
+                    r'<control type="textbox">\n\t\t\t\t\t<left>0</left>\n\t\t\t\t\t<top>318</top>\n\t\t\t\t\t<width>820</width>\n\t\t\t\t\t<height>60</height>\1<label>$VAR[FlixPlot2]</label>',
                     blk,
                     count=1
                 )
                 return blk
 
-            content = replace_include_block(content, "FlixHero", patch_hero_plot)
+            content = replace_include_block(content, "FlixHero", revert_hero_plot)
 
-            def patch_hero_frozen_plot(blk):
+            def revert_hero_frozen_plot(blk):
                 blk = re.sub(
-                    r'<control type="textbox">\s*<left>0</left>\s*<top>\$PARAM\[plot\]</top>\s*<width>820</width>\s*<height>60</height>',
-                    r'<control type="textbox">\n\t\t\t\t\t<left>0</left>\n\t\t\t\t\t<top>$PARAM[plot]</top>\n\t\t\t\t\t<width>880</width>\n\t\t\t\t\t<height>155</height>',
+                    r'<control type="textbox">\s*<left>0</left>\s*<top>\$PARAM\[plot\]</top>\s*<width>880</width>\s*<height>155</height>',
+                    r'<control type="textbox">\n\t\t\t\t\t<left>0</left>\n\t\t\t\t\t<top>$PARAM[plot]</top>\n\t\t\t\t\t<width>820</width>\n\t\t\t\t\t<height>60</height>',
                     blk,
                     count=1
                 )
                 return blk
 
-            content = replace_include_block(content, "FlixHeroFrozen", patch_hero_frozen_plot)
-
+            content = replace_include_block(content, "FlixHeroFrozen", revert_hero_frozen_plot)
 
             if content != original:
                 content = re.sub(r'(<includes\b[^>]*>)', r'\1' + newline + MARKER, content, count=1)
