@@ -42,11 +42,11 @@ def generar():
     addons_xml += "</addons>\n"
 
     addons_xml_path = os.path.join(REPO_DIR, "addons.xml")
-    with open(addons_xml_path, "w", encoding="utf-8") as f:
+    with open(addons_xml_path, "w", encoding="utf-8", newline="\n") as f:
         f.write(addons_xml)
 
     md5_hash = hashlib.md5(addons_xml.encode("utf-8")).hexdigest()
-    with open(addons_xml_path + ".md5", "w", encoding="utf-8") as f:
+    with open(addons_xml_path + ".md5", "w", encoding="utf-8", newline="\n") as f:
         f.write(md5_hash)
 
     print("¡Repositorio generado con éxito!")
