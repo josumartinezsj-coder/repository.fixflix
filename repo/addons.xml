@@ -12,7 +12,7 @@
         <platform>all</platform>
     </extension>
 </addon>
-<addon id="service.autoexec" name="Autoexec Service" version="1.0.0" provider-name="User">
+<addon id="service.autoexec" name="Autoexec Service" version="1.0.1" provider-name="User">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
     </requires>
